@@ -1,15 +1,3 @@
-Eso ocurre porque has pegado **el mensaje de texto entero de la conversación** (incluyendo las explicaciones, las comillas del bloque de código `html...` y las notas finales) dentro de tu archivo `.html`.
-
-Al no ser un archivo HTML limpio, el navegador interpreta el texto explicativo como contenido visible y no ejecuta las etiquetas correctamente. Además, la imagen del logo sale rota porque el archivo de imagen `logo_.png` no se encuentra en la misma carpeta que tu HTML.
-
----
-
-### Cómo solucionarlo en 2 pasos:
-
-**1. Limpia tu archivo HTML**
-Abre tu archivo con tu editor de código (Notepad++, VS Code, Bloc de notas, etc.), borra **absolutamente todo** su contenido y pega **únicamente** el siguiente bloque limpio (sin textos fuera de la etiqueta `<!DOCTYPE html>` ni al final):
-
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
