@@ -1,109 +1,212 @@
+Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado la etiqueta `<header>` anterior por el nuevo contenedor `.banner` con el logo, el título y el subtítulo con su línea divisoria, además de añadir el diseño centrado y adaptable en tarjeta (`.card`).
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <title>Test Excel Oposiciones AGE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- Configuración de manifest e iconos PWA -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0d47a1" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="Test Info">
+  <meta name="application-name" content="Test Info">
+  <meta name="theme-color" content="#FFF7ED" />
+
   <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 15px;
+    }
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 0;
-      background: #f5f5f5;
+      background: #FFF7ED;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
       color: #222;
     }
-    header {
-      background: #0d47a1;
-      color: #fff;
-      padding: 1rem;
-      text-align: center;
-    }
-    main {
-      max-width: 800px;
-      margin: 1rem auto 2rem;
-      background: #fff;
-      padding: 1rem 1.5rem;
+
+    /* Contenedor tipo tarjeta centrado para Móvil y PC */
+    .card {
+      background: #FFF7ED;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #f0e0d2;
+      margin: 0 auto;
     }
+
+    /* ESTILOS DE LA CABECERA INTEGRADA */
+    .banner {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      width: 100% !important;
+      border-bottom: 2px solid #007bff; /* Línea divisoria debajo del subtítulo */
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      display: block !important;
+      max-width: 220px;
+      width: 100%;
+      height: auto;
+      margin: 0 auto 10px auto !important;
+    }
+
+    .titulo-test {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: #111;
+      text-align: center;
+      display: block;
+      width: 100%;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #444;
+      font-weight: bold;
+    }
+
+    /* Temporizador y Contenido del Test */
+    .timer {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #b71c1c;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
     .question {
       margin-bottom: 1.5rem;
       padding-bottom: 1rem;
       border-bottom: 1px solid #eee;
     }
+
     .question h3 {
       margin: 0 0 .5rem;
       font-size: 1rem;
     }
+
     .options label {
       display: block;
       margin: .25rem 0;
       cursor: pointer;
     }
+
+    /* Botones */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
     button {
-      background: #0d47a1;
+      background: #007bff;
       color: #fff;
       border: none;
       padding: .6rem 1.2rem;
-      border-radius: 4px;
+      border-radius: 5px;
       cursor: pointer;
       font-size: .95rem;
-      margin-right: .5rem;
+      font-weight: bold;
+      flex: 1;
+      min-width: 120px;
     }
+
+    button:hover {
+      background: #0056b3;
+    }
+
     button.secondary {
       background: #e0e0e0;
       color: #222;
     }
+
+    button.secondary:hover {
+      background: #d0d0d0;
+    }
+
     button:disabled {
       opacity: .6;
       cursor: default;
     }
+
+    /* Resultados y soluciones */
     .results {
       margin-top: 1rem;
       padding: .75rem;
       border-radius: 6px;
       background: #e3f2fd;
     }
+
     .correct {
       color: #1b5e20;
       font-weight: 600;
     }
+
     .incorrect {
       color: #b71c1c;
       font-weight: 600;
     }
-    .timer {
-      font-weight: 600;
-      margin-bottom: .75rem;
-      color: #b71c1c;
-    }
+
     .answer-key {
       margin-top: 1rem;
       font-size: .9rem;
     }
+
     .answer-key p {
-      margin: .15rem 0;
+      margin: .3rem 0;
     }
   </style>
 </head>
 <body>
-<header>
-  <h1>Cuestionario Excel – Oposiciones AGE</h1>
-</header>
-<main>
-  <div class="timer" id="timer">Tiempo: 10:00</div>
-  <form id="quizForm"></form>
 
-  <div>
-    <button type="button" id="submitBtn">Corregir</button>
-    <button type="button" id="retryBtn" class="secondary" disabled>Volver a intentar</button>
-    <button type="button" id="shuffleBtn" class="secondary" disabled>Mezclar preguntas</button>
+<div class="card">
+
+  <!-- CABECERA INTEGRADA -->
+  <div class="banner">
+    <img src="logo_.png" alt="Informática Q Aluche" class="logo">
+    <span class="titulo-test">Test de conocimientos básicos de Informática</span>
+    <div class="subtitle">INFORMÁTICA Q ALUCHE</div>
   </div>
 
-  <div id="results" class="results" style="display:none;"></div>
-  <div id="answerKey" class="answer-key" style="display:none;"></div>
-</main>
+  <main>
+    <div class="timer" id="timer">Tiempo: 10:00</div>
+    <form id="quizForm"></form>
+
+    <div class="actions">
+      <button type="button" id="submitBtn">Corregir</button>
+      <button type="button" id="retryBtn" class="secondary" disabled>Volver a intentar</button>
+      <button type="button" id="shuffleBtn" class="secondary" disabled>Mezclar preguntas</button>
+    </div>
+
+    <div id="results" class="results" style="display:none;"></div>
+    <div id="answerKey" class="answer-key" style="display:none;"></div>
+  </main>
+
+</div>
 
 <script>
   const questionsBase = [
@@ -392,3 +495,5 @@
 </script>
 </body>
 </html>
+
+```
