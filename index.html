@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Excel Oposiciones AGE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d47a1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      color: #222;
+    }
+    header {
+      background: #0d47a1;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      max-width: 800px;
+      margin: 1rem auto 2rem;
+      background: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .question {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    .question h3 {
+      margin: 0 0 .5rem;
+      font-size: 1rem;
+    }
+    .options label {
+      display: block;
+      margin: .25rem 0;
+      cursor: pointer;
+    }
+    button {
+      background: #0d47a1;
+      color: #fff;
+      border: none;
+      padding: .6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: .95rem;
+      margin-right: .5rem;
+    }
+    button.secondary {
+      background: #e0e0e0;
+      color: #222;
+    }
+    button:disabled {
+      opacity: .6;
+      cursor: default;
+    }
+    .results {
+      margin-top: 1rem;
+      padding: .75rem;
+      border-radius: 6px;
+      background: #e3f2fd;
+    }
+    .correct {
+      color: #1b5e20;
+      font-weight: 600;
+    }
+    .incorrect {
+      color: #b71c1c;
+      font-weight: 600;
+    }
+    .timer {
+      font-weight: 600;
+      margin-bottom: .75rem;
+      color: #b71c1c;
+    }
+    .answer-key {
+      margin-top: 1rem;
+      font-size: .9rem;
+    }
+    .answer-key p {
+      margin: .15rem 0;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Cuestionario Excel – Oposiciones AGE</h1>
+</header>
+<main>
+  <div class="timer" id="timer">Tiempo: 10:00</div>
+  <form id="quizForm"></form>
+
+  <div>
+    <button type="button" id="submitBtn">Corregir</button>
+    <button type="button" id="retryBtn" class="secondary" disabled>Volver a intentar</button>
+    <button type="button" id="shuffleBtn" class="secondary" disabled>Mezclar preguntas</button>
+  </div>
+
+  <div id="results" class="results" style="display:none;"></div>
+  <div id="answerKey" class="answer-key" style="display:none;"></div>
+</main>
+
+<script>
+  const questionsBase = [
+    {
+      text: "¿Qué símbolo inicia una fórmula?",
+      options: ["=", "+", ":", "#"],
+      correctIndex: 0
+    },
+    {
+      text: "¿Qué función suma un rango?",
+      options: ["MAX", "SUMA", "CONTAR", "SI"],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué es una celda?",
+      options: [
+        "Una hoja",
+        "La intersección de una fila y una columna",
+        "Un libro",
+        "Un gráfico"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué hace F2?",
+      options: [
+        "Guarda",
+        "Edita la celda activa",
+        "Copia",
+        "Inserta fila"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué referencia es $A$1?",
+      options: [
+        "Relativa",
+        "Absoluta",
+        "Mixta",
+        "Circular"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué función devuelve el promedio?",
+      options: [
+        "MEDIA",
+        "PROMEDIO",
+        "SUMA",
+        "CONTAR"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué hace Ctrl + Flecha abajo?",
+      options: [
+        "Baja una fila",
+        "Va a la última celda con datos",
+        "Selecciona toda la columna",
+        "Inserta fila"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué es un rango?",
+      options: [
+        "Una celda",
+        "Un conjunto de celdas",
+        "Un libro",
+        "Un gráfico"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué función cuenta celdas con números?",
+      options: [
+        "CONTAR",
+        "CONTARA",
+        "SUMA",
+        "MAX"
+      ],
+      correctIndex: 0
+    },
+    {
+      text: "¿Qué hace Ctrl + C?",
+      options: [
+        "Corta",
+        "Copia",
+        "Pega",
+        "Borra"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué opción ordena datos de menor a mayor?",
+      options: [
+        "Datos → Ordenar de A a Z",
+        "Datos → Filtro",
+        "Inicio → Alineación",
+        "Insertar → Tabla"
+      ],
+      correctIndex: 0
+    },
+    {
+      text: "¿Qué es una hoja?",
+      options: [
+        "Un libro",
+        "Una página dentro del libro",
+        "Un gráfico",
+        "Un rango"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué hace la función SI?",
+      options: [
+        "Suma",
+        "Evalúa una condición",
+        "Cuenta",
+        "Ordena"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué es un gráfico?",
+      options: [
+        "Una tabla",
+        "Una representación visual de datos",
+        "Un estilo",
+        "Un filtro"
+      ],
+      correctIndex: 1
+    },
+    {
+      text: "¿Qué hace Ctrl + V?",
+      options: [
+        "Copia",
+        "Pega",
+        "Corta",
+        "Deshace"
+      ],
+      correctIndex: 1
+    }
+  ];
+
+  let questions = [];
+  let timerInterval = null;
+  const totalSeconds = 10 * 60; // 10 minutos
+  let remainingSeconds = totalSeconds;
+
+  const quizForm = document.getElementById("quizForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const retryBtn = document.getElementById("retryBtn");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const resultsDiv = document.getElementById("results");
+  const answerKeyDiv = document.getElementById("answerKey");
+  const timerDiv = document.getElementById("timer");
+
+  function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function renderQuiz() {
+    quizForm.innerHTML = "";
+    questions.forEach((q, index) => {
+      const qDiv = document.createElement("div");
+      qDiv.className = "question";
+
+      const title = document.createElement("h3");
+      title.textContent = `${index + 1}. ${q.text}`;
+      qDiv.appendChild(title);
+
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+
+      q.options.forEach((opt, optIndex) => {
+        const id = `q${index}_opt${optIndex}`;
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q${index}`;
+        input.value = optIndex;
+        input.id = id;
+
+        label.setAttribute("for", id);
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(" " + opt));
+        optionsDiv.appendChild(label);
+      });
+
+      qDiv.appendChild(optionsDiv);
+      quizForm.appendChild(qDiv);
+    });
+  }
+
+  function formatTime(sec) {
+    const m = String(Math.floor(sec / 60)).padStart(2, "0");
+    const s = String(sec % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    remainingSeconds = totalSeconds;
+    timerDiv.textContent = "Tiempo: " + formatTime(remainingSeconds);
+    timerInterval = setInterval(() => {
+      remainingSeconds--;
+      timerDiv.textContent = "Tiempo: " + formatTime(remainingSeconds);
+      if (remainingSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerDiv.textContent = "Tiempo agotado";
+        submitQuiz(true);
+      }
+    }, 1000);
+  }
+
+  function submitQuiz(fromTimer = false) {
+    let score = 0;
+    const total = questions.length;
+    const answers = [];
+
+    questions.forEach((q, index) => {
+      const selected = quizForm.querySelector(`input[name="q${index}"]:checked`);
+      const selectedIndex = selected ? parseInt(selected.value, 10) : null;
+      const isCorrect = selectedIndex === q.correctIndex;
+      if (isCorrect) score++;
+      answers.push({ index, selectedIndex, correctIndex: q.correctIndex });
+    });
+
+    resultsDiv.style.display = "block";
+    resultsDiv.innerHTML = `
+      <strong>Resultado:</strong> ${score} / ${total}
+      ${fromTimer ? "<br>El tiempo ha finalizado." : ""}
+    `;
+
+    answerKeyDiv.style.display = "block";
+    answerKeyDiv.innerHTML = "<strong>Soluciones:</strong>";
+    answers.forEach((a, i) => {
+      const q = questions[i];
+      const correctText = q.options[a.correctIndex];
+      const selectedText = a.selectedIndex != null ? q.options[a.selectedIndex] : "Sin respuesta";
+      const p = document.createElement("p");
+      const cls = a.selectedIndex === a.correctIndex ? "correct" : "incorrect";
+      p.innerHTML = `${i + 1}. <span class="${cls}">Correcta: ${correctText}</span> | Tu respuesta: ${selectedText}`;
+      answerKeyDiv.appendChild(p);
+    });
+
+    submitBtn.disabled = true;
+    retryBtn.disabled = false;
+    shuffleBtn.disabled = false;
+    clearInterval(timerInterval);
+  }
+
+  function resetQuiz(shuffle = false) {
+    resultsDiv.style.display = "none";
+    answerKeyDiv.style.display = "none";
+    submitBtn.disabled = false;
+    retryBtn.disabled = true;
+    shuffleBtn.disabled = true;
+
+    questions = shuffle ? shuffleArray(questionsBase) : [...questionsBase];
+    renderQuiz();
+    startTimer();
+  }
+
+  submitBtn.addEventListener("click", () => submitQuiz(false));
+  retryBtn.addEventListener("click", () => resetQuiz(false));
+  shuffleBtn.addEventListener("click", () => resetQuiz(true));
+
+  // Inicialización
+  questions = [...questionsBase];
+  renderQuiz();
+  startTimer();
+
+  // Registro del service worker
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
