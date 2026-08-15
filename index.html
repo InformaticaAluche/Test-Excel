@@ -1,10 +1,13 @@
-El motivo por el cual no se centra es que la etiqueta `main` dentro del HTML actual tiene estilos por defecto que fuerzan una alineación a la izquierda y un ancho independiente dentro del contenedor `.card`.
+Eso ocurre porque has pegado **el mensaje de texto entero de la conversación** (incluyendo las explicaciones, las comillas del bloque de código `html...` y las notas finales) dentro de tu archivo `.html`.
 
-Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu código por la versión final corregida a continuación. En esta versión:
+Al no ser un archivo HTML limpio, el navegador interpreta el texto explicativo como contenido visible y no ejecuta las etiquetas correctamente. Además, la imagen del logo sale rota porque el archivo de imagen `logo_.png` no se encuentra en la misma carpeta que tu HTML.
 
-1. Se fuerza la alineación central a todo el contenido de la tarjeta (`.card`).
-2. Se ajusta la regla `.banner` para asegurar que el logo, título y subtítulo se mantengan centrados tanto en PC como en móviles.
-3. Se alinean al centro los botones y el temporizador.
+---
+
+### Cómo solucionarlo en 2 pasos:
+
+**1. Limpia tu archivo HTML**
+Abre tu archivo con tu editor de código (Notepad++, VS Code, Bloc de notas, etc.), borra **absolutamente todo** su contenido y pega **únicamente** el siguiente bloque limpio (sin textos fuera de la etiqueta `<!DOCTYPE html>` ni al final):
 
 ```html
 <!DOCTYPE html>
@@ -14,7 +17,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
   <title>Test Excel Oposiciones AGE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   
-  <!-- Configuración de manifest e iconos PWA -->
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -23,7 +25,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
   <meta name="theme-color" content="#FFF7ED" />
 
   <style>
-    /* Reset básico */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -45,7 +46,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
       color: #222;
     }
 
-    /* Contenedor tipo tarjeta centrado para Móvil y PC */
     .card {
       background: #FFF7ED;
       padding: 20px;
@@ -54,34 +54,33 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
       max-width: 600px;
       border: 1px solid #f0e0d2;
       margin: 0 auto;
-      text-align: center; /* Centra todo el contenido base de la tarjeta */
+      text-align: center;
     }
 
     main {
       width: 100%;
       margin: 0 auto;
-      text-align: left; /* Restablece alineación a la izquierda solo para las preguntas */
+      text-align: left;
     }
 
-    /* CABECERA CENTRADA */
     .banner {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: center !important;
-      text-align: center !important;
-      width: 100% !important;
-      border-bottom: 2px solid #007bff; /* Línea divisoria */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      border-bottom: 2px solid #007bff;
       padding-bottom: 15px;
       margin-bottom: 20px;
     }
 
     .logo {
-      display: block !important;
+      display: block;
       max-width: 220px;
       width: 100%;
       height: auto;
-      margin: 0 auto 10px auto !important;
+      margin: 0 auto 10px auto;
     }
 
     .titulo-test {
@@ -101,7 +100,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
       font-weight: bold;
     }
 
-    /* Temporizador y Contenido del Test */
     .timer {
       font-weight: 600;
       margin-bottom: 1rem;
@@ -127,7 +125,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
       cursor: pointer;
     }
 
-    /* Botones */
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -167,7 +164,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
       cursor: default;
     }
 
-    /* Resultados y soluciones */
     .results {
       margin-top: 1rem;
       padding: .75rem;
@@ -200,7 +196,6 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
 
 <div class="card">
 
-  <!-- CABECERA INTEGRADA Y CENTRADA -->
   <div class="banner">
     <img src="logo_.png" alt="Informática Q Aluche" class="logo">
     <span class="titulo-test">Test de conocimientos de Excel</span>
@@ -369,7 +364,7 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
 
   let questions = [];
   let timerInterval = null;
-  const totalSeconds = 10 * 60; // 10 minutos
+  const totalSeconds = 10 * 60;
   let remainingSeconds = totalSeconds;
 
   const quizForm = document.getElementById("quizForm");
@@ -496,12 +491,10 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
   retryBtn.addEventListener("click", () => resetQuiz(false));
   shuffleBtn.addEventListener("click", () => resetQuiz(true));
 
-  // Inicialización
   questions = [...questionsBase];
   renderQuiz();
   startTimer();
 
-  // Registro del service worker
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("sw.js").catch(() => {});
@@ -513,4 +506,7 @@ Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu 
 
 ```
 
-*Recuerda refrescar la página con `Ctrl + F5` después de guardar para que el navegador actualice la caché.*
+---
+
+**2. Asegura la ruta del logo**
+Comprueba que la imagen del logo se llame exactamente **`logo_.png`** y que esté en la **misma carpeta** donde guardaste el archivo `.html`. De lo contrario, seguirá saliendo la casilla rota.
