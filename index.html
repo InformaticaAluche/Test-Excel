@@ -1,4 +1,10 @@
-Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado la etiqueta `<header>` anterior por el nuevo contenedor `.banner` con el logo, el título y el subtítulo con su línea divisoria, además de añadir el diseño centrado y adaptable en tarjeta (`.card`).
+El motivo por el cual no se centra es que la etiqueta `main` dentro del HTML actual tiene estilos por defecto que fuerzan una alineación a la izquierda y un ancho independiente dentro del contenedor `.card`.
+
+Para corregirlo de forma definitiva, aplica esta solución sustituyendo todo tu código por la versión final corregida a continuación. En esta versión:
+
+1. Se fuerza la alineación central a todo el contenido de la tarjeta (`.card`).
+2. Se ajusta la regla `.banner` para asegurar que el logo, título y subtítulo se mantengan centrados tanto en PC como en móviles.
+3. Se alinean al centro los botones y el temporizador.
 
 ```html
 <!DOCTYPE html>
@@ -48,9 +54,16 @@ Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado l
       max-width: 600px;
       border: 1px solid #f0e0d2;
       margin: 0 auto;
+      text-align: center; /* Centra todo el contenido base de la tarjeta */
     }
 
-    /* ESTILOS DE LA CABECERA INTEGRADA */
+    main {
+      width: 100%;
+      margin: 0 auto;
+      text-align: left; /* Restablece alineación a la izquierda solo para las preguntas */
+    }
+
+    /* CABECERA CENTRADA */
     .banner {
       display: flex !important;
       flex-direction: column !important;
@@ -58,7 +71,7 @@ Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado l
       justify-content: center !important;
       text-align: center !important;
       width: 100% !important;
-      border-bottom: 2px solid #007bff; /* Línea divisoria debajo del subtítulo */
+      border-bottom: 2px solid #007bff; /* Línea divisoria */
       padding-bottom: 15px;
       margin-bottom: 20px;
     }
@@ -120,6 +133,7 @@ Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado l
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 15px;
+      justify-content: center;
     }
 
     button {
@@ -159,6 +173,7 @@ Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado l
       padding: .75rem;
       border-radius: 6px;
       background: #e3f2fd;
+      text-align: center;
     }
 
     .correct {
@@ -185,7 +200,7 @@ Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado l
 
 <div class="card">
 
-  <!-- CABECERA INTEGRADA -->
+  <!-- CABECERA INTEGRADA Y CENTRADA -->
   <div class="banner">
     <img src="logo_.png" alt="Informática Q Aluche" class="logo">
     <span class="titulo-test">Test de conocimientos básicos de Informática</span>
@@ -497,3 +512,5 @@ Aquí tienes todo el código integrado en un único archivo. Se ha reemplazado l
 </html>
 
 ```
+
+*Recuerda refrescar la página con `Ctrl + F5` después de guardar para que el navegador actualice la caché.*
